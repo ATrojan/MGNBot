@@ -15,9 +15,7 @@ def main():
 		process_submission(submission)
 
 def process_submission(submission):
-	#comment = next(reddit.subreddit.submission())
-	#if submission.created_utc < time:
-	#	continue
+	
 	normalized_title = submission.title.lower()
 	for question_phrase in QUESTIONS:
 		if submission.created_utc < time:	#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
