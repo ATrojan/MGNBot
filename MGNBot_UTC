@@ -4,21 +4,21 @@ import time
 
 QUESTIONS = ['need help', 'first grow', 'whats wrong', 'newbie', 'noob']
 REPLY_TEMPLATE = 'Have you checked the [sidebar](https://www.reddit.com/r/microgrowery/wiki/config/sidebar) It is full of all sorts of helpful Information'
-#start = int(time.time())
-start = 1491883370.0
+time = int(time.time())
+start = 1491883360.0
 reddit = praw.Reddit('bot1')
 subreddit = reddit.subreddit('MGNBot')
 
 def main():
-	
+	print(time)
 	print(start)
 	
 	for submission in subreddit.stream.submissions():
 		process_submission(submission)
 
 def process_submission(submission):
-	comment = next(reddit.subreddit.submission())
-	if format(comment.created_utc) > start:
+	#comment = next(reddit.subreddit.submission())
+	if format(submission.created_utc) < time:
 		return
 	normalized_title = submission.title.lower()
 	for question_phrase in QUESTIONS:
