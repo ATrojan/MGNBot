@@ -1,15 +1,21 @@
+#!/usr/bin/python
 import praw
 import time
 
-
-QUESTIONS = ['need help', 'first grow', 'whats wrong', 'newbie', 'noob']
+QUESTIONS = ['need help', 'first grow', 'whats wrong', 'newbie', 'noob']	#Newbie Questions
 REPLY_TEMPLATE = 'Have you checked the [sidebar](https://www.reddit.com/r/microgrowery/wiki/config/sidebar) It is full of all sorts of helpful Information'
+Sex = ['male or female', 'sex', 'sex?', 'sexing', 'are these males', 'are these female', 'males?', 'female?', 'male/female?', 'male/female']	#Sex questions
+Sex_Info = 'Sex can be determined in the first stages of pre flower, if your plant is still in Veg or just a baby you will need to wait till it begins to mature. \
+			Males will display them selves by developing little sacs or balls full of pollen while Females start to grow Pistels. \
+			Here is a [Quiz](https://docs.google.com/forms/d/e/1FAIpQLSc1v779jfbU1-AmDcw0u09BCS3pIhBpnUem-8x3xiiX17TG8g/viewform?c=0&w=1) to help \
+			test your abilities and make you feel more comfortable. Here is a link to a post on [GrowWeedEasy](http://www.growweedeasy.com/marijuana-boy-girl) \
+			with some more useful information.'
 time = int(time.time())			#sets time to when bot was first started
 reddit = praw.Reddit('bot1')		#sets up bots credentials 
 subreddit = reddit.subreddit('MGNBot')	#Sets subreddit
 
 def main():
-	print(time)	#Prints Start time of Bot
+	print(time)
 	
 	for submission in subreddit.stream.submissions():	#Looks for New Posts
 		process_submission(submission)
@@ -18,7 +24,8 @@ def process_submission(submission):
 	
 	normalized_title = submission.title.lower()
 	for question_phrase in QUESTIONS:
-		if submission.created_utc < time:	#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
+	
+		if submission.created_utc < time:				#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
 			continue
 		
 		elif question_phrase in normalized_title:
@@ -26,6 +33,18 @@ def process_submission(submission):
 			submission.reply(REPLY_TEMPLATE)
 			# A reply has been made so do not attempt to match other phrases.
 			break
+		
 
+	for question_phrase1 in Sex:
+	
+		if submission.created_utc < time:				#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
+			continue
+			
+		elif question_phrase1 in normalized_title:
+			print('Replying to: {}'.format(submission.title))
+			submission.reply(Sex_Info)
+			# A reply has been made so do not attempt to match other phrases.
+			break
+			
 if __name__ == '__main__':
     main()
