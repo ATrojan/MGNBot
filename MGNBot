@@ -27,17 +27,6 @@ def main():
 def process_submission(submission):
 	
 	normalized_title = submission.title.lower()
-	for question_phrase in QUESTIONS:
-	
-		if submission.created_utc < time:				#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
-			continue
-		
-		elif question_phrase in normalized_title:
-			print('Replying to: {}'.format(submission.title))
-			submission.reply(REPLY_TEMPLATE)
-			# A reply has been made so do not attempt to match other phrases.
-			break
-		
 
 	for question_phrase1 in Sex:
 	
@@ -48,7 +37,19 @@ def process_submission(submission):
 			print('Replying to: {}'.format(submission.title))
 			submission.reply(Sex_Info)
 			# A reply has been made so do not attempt to match other phrases.
-			break
+			return
+
+	for question_phrase in QUESTIONS:
+	
+		if submission.created_utc < time:				#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
+			continue
+		
+		elif question_phrase in normalized_title:
+			print('Replying to: {}'.format(submission.title))
+			submission.reply(REPLY_TEMPLATE)
+			# A reply has been made so do not attempt to match other phrases.
+			return
+		
 			
 if __name__ == '__main__':
     main()
