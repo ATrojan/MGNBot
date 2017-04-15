@@ -14,7 +14,7 @@ Sex_Info = 'Sex can be determined once the plant starts to receive less than 14 
 			to help you familiarize yourself with marijuana plant sex. Here is a link to [GrowWeedEasy](http://www.growweedeasy.com/marijuana-boy-girl) \
 			with some more useful information. The quiz was provided by Ser_NSFW'
 
-time = int(time.time() - 1000)			#sets time to when bot was first started
+time = int(time.time())			#sets time to when bot was first started
 reddit = praw.Reddit('bot1')		#sets up bots credentials 
 subreddit = reddit.subreddit('MGNBot')	#Sets subreddit
 
