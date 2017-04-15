@@ -2,21 +2,23 @@
 import praw
 import time
 
-QUESTIONS = ['need help', 'first grow', 'whats wrong', 'newbie', 'noob']	#Newbie Questions
-REPLY_TEMPLATE = 'Have you checked the [sidebar](https://www.reddit.com/r/microgrowery/wiki/config/sidebar) It is full of all sorts of helpful Information'
-Sex = ['male or female', 'sex', 'sex?', 'sexing', 'are these males', 'are these female', 'males?', 'male?', 'females?' 'female?', 'male/female?', 'male/female']	#Sex questions
+Questions = ('need help', 'first grow', 'whats wrong', 'newbie', 'noob');	#Newbie Questions
+REPLY_TEMPLATE = 'Have you checked the [sidebar](https://www.reddit.com/r/microgrowery/wiki/config/sidebar) \
+		It is full of all sorts of helpful Information'
+Sex = ('male or female', 'sex', 'sex?', 'sexing', 'are these males', 'are these female', \
+       'males?', 'male?', 'females?' 'female?', 'male/female?', 'male/female');	#Sex questions
 Sex_Info = 'Sex can be determined once the plant starts to receive less than 14 hours of light per day, in the "pre-flower" stage. If your plant \
-			is still in seedling or vegetative phase (>14 hours of light per day) you may see early sex indicators, but wait till pre-flower is \
-			triggered to be sure.\
-			Males will develop little ball-shaped pollen sacs, while females will develop pointy, teardrop-shaped growths that extrude fuzzy white \
-			hairs called "pistils". Some plants may show signs of both sexes, we call these "hermaphrodites", or "hermies". \
-			Here is a [Quiz](https://docs.google.com/forms/d/e/1FAIpQLSc1v779jfbU1-AmDcw0u09BCS3pIhBpnUem-8x3xiiX17TG8g/viewform?c=0&w=1) \
-			to help you familiarize yourself with marijuana plant sex. Here is a link to [GrowWeedEasy](http://www.growweedeasy.com/marijuana-boy-girl) \
-			with some more useful information. The quiz was provided by Ser_NSFW'
+		is still in seedling or vegetative phase (>14 hours of light per day) you may see early sex indicators, but wait till pre-flower is \
+		triggered to be sure.\
+		Males will develop little ball-shaped pollen sacs, while females will develop pointy, teardrop-shaped growths that extrude fuzzy white \
+		hairs called "pistils". Some plants may show signs of both sexes, we call these "hermaphrodites", or "hermies". \
+		Here is a [Quiz](https://docs.google.com/forms/d/e/1FAIpQLSc1v779jfbU1-AmDcw0u09BCS3pIhBpnUem-8x3xiiX17TG8g/viewform?c=0&w=1) \
+		to help you familiarize yourself with marijuana plant sex. Here is a link to [GrowWeedEasy](http://www.growweedeasy.com/marijuana-boy-girl) \
+		with some more useful information. The quiz was provided by Ser_NSFW'
 
 time = int(time.time())			#sets time to when bot was first started
-reddit = praw.Reddit('bot1')		#sets up bots credentials 
-subreddit = reddit.subreddit('MGNBot')	#Sets subreddit
+reddit = praw.Reddit('bot1')			#sets up bots credentials 
+subreddit = reddit.subreddit('MGNBot')		#Sets subreddit
 
 def main():
 	print(time)
@@ -24,32 +26,39 @@ def main():
 	for submission in subreddit.stream.submissions():	#Looks for New Posts
 		process_submission(submission)
 
+def should_skip(submission):
+    if submission.created_utc < time:
+		return(True)
+    
+
+def generate_response(submission):				#Generates a response based on the title and returns the corect reply
+	
+	normalized_title = submission.title.lower()		#Replaces capitol letters with lower case ones
+	
+	for question_phrase in Sex:
+		if question_phrase in normalized_title:
+			print('Replying to: {}'.format(submission.title))
+			return(Sex_Info)
+
+
+	for question_phrase1 in Questions:
+		if question_phrase1 in normalized_title:
+			print('Replying to: {}'.format(submission.title))
+			return(REPLY_TEMPLATE)
+
+
 def process_submission(submission):
 	
-	normalized_title = submission.title.lower()
-
-	for question_phrase1 in Sex:
-	
-		if submission.created_utc < time:				#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
-			continue
-			
-		elif question_phrase1 in normalized_title:
-			print('Replying to: {}'.format(submission.title))
-			submission.reply(Sex_Info)
-			# A reply has been made so do not attempt to match other phrases.
-			return
-
-	for question_phrase in QUESTIONS:
-	
-		if submission.created_utc < time:				#Checks to make sure submission was created after Bot was initalized Prevents duplicates after crash
-			continue
+	if should_skip(submission):
+		return
 		
-		elif question_phrase in normalized_title:
-			print('Replying to: {}'.format(submission.title))
-			submission.reply(REPLY_TEMPLATE)
-			# A reply has been made so do not attempt to match other phrases.
-			return
-		
-			
+	response = generate_response(submission)
+	
+	if response:
+		submission.reply(response)
+
+	return response
+	
+	
 if __name__ == '__main__':
     main()
